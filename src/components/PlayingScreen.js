@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { SudokuBoard } from "./SudokuBoard";
 
-const checkCorrectAnswer = (value) => value < 0;
+// TODO Implement ID as a private attribute for Cell
+// TODO rename Cell
 class Cell {
   #value;
   #status;
@@ -16,85 +17,83 @@ class Cell {
     return this.#status;
   }
 }
-export default function PlayingScreen({ board }) {
-  const createPlayBoard = (b) => {
-    let map = new Map();
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        let id = `${i}${j}`;
-        if (b[i][j] < 0) {
-          map.set(id, new Cell(null, "empty"));
-        } else {
-          map.set(id, new Cell(b[i][j], "original"));
-        }
-      }
-    }
-    return map;
-  };
-  const [currentPlayBoard, setPlayBoard] = useState(createPlayBoard(board));
-  const [gameState, setGameState] = useState('playing')
-  function checkAnswer(row, column, value) {
-    // TODO Find out how to get parameters as strings
-    row = parseInt(row);
-    column = parseInt(column);
-    value = parseInt(value);
-    const boardValue = board[row][column];
-    if (value == -boardValue) {
-      return "correct";
-    }
-    // TODO Should become a function later
-    let firstRow, lastRow, firstColumn, lastColumn;
-    if (row <= 2) {
-      firstRow = 0;
-      lastRow = 2;
-    } else if (row <= 5) {
-      firstRow = 3;
-      lastRow = 5;
-    } else {
-      firstRow = 6;
-      lastRow = 8;
-    }
 
-    if (column <= 2) {
-      firstColumn = 0;
-      lastColumn = 2;
-    } else if (column <= 5) {
-      firstColumn = 3;
-      lastColumn = 5;
-    } else {
-      firstColumn = 6;
-      lastColumn = 8;
-    }
-    const zone = [];
-    for (let i = firstRow; i <= lastRow; i++) {
-      for (let j = firstColumn; j <= lastColumn; j++) {
-        zone.push(board[i][j]);
+const checkCorrectAnswer = (value) => value < 0;
+
+function CheckingButton({ checkingPlaysFunction }) {
+  return (
+    <div>
+      <button onClick={checkingPlaysFunction}>Check</button>
+    </div>
+  );
+}
+
+const createPlayBoard = (boardObject) => {
+  let map = new Map();
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      let id = `${i}${j}`;
+      if (boardObject[i][j] < 0) {
+        map.set(id, new Cell(null, "empty"));
+      } else {
+        map.set(id, new Cell(boardObject[i][j], "original"));
       }
     }
-    if (
-      board[row].includes(value) ||
-      board.map((row) => row[column]).includes(value) ||
-      zone.includes(value)
-    ) {
-      console.log("invalido");
-      return "invalid";
+  }
+  return map;
+};
+
+function checkPlay(board, row, column, value) {
+  row = parseInt(row);
+  column = parseInt(column);
+  value = parseInt(value);
+  const boardValue = board[row][column];
+  if (value === -boardValue) return "correct";
+  const getZoneBounds = (index) => {
+    if (index <= 2) return [0, 2];
+    if (index <= 5) return [3, 5];
+    return [6, 8];
+  };
+  const rowBounds = getZoneBounds(row);
+  const columnBounds = getZoneBounds(column);
+  // The board is split into three 3x3 grids. This array reprents its values
+  const zone = [];
+  for (let i = rowBounds[0]; i <= rowBounds[1]; i++) {
+    for (let j = columnBounds[0]; j <= columnBounds[1]; j++) {
+      zone.push(board[i][j]);
     }
-    return "valid";
+  }
+  if (
+    board[row].includes(value) || // row values
+    board.map((row) => row[column]).includes(value) || //column values
+    zone.includes(value) // zone values
+  ) {
+    return "invalid";
+  }
+  return "valid";
+}
+
+export default function PlayingScreen({ board }) {
+  // Game board represented as a Map. gets updated with each play.
+  const [currentPlayBoard, setPlayBoard] = useState(createPlayBoard(board));
+  const [gameState, setGameState] = useState("playing");
+
+  function switchToCheckingState() {
+    setGameState("checking");
   }
 
-  function receiveInputs(row, column, value) {
+  function processPlays(row, column, value) {
     let newPlayBoard = new Map(currentPlayBoard);
-    let status = checkAnswer(row, column, value);
-    console.log(`valor recebido: ${value}; status : ${status}`);
+    let status = checkPlay(board, row, column, value);
     newPlayBoard.set(`${row}${column}`, new Cell(value, status));
     setPlayBoard(newPlayBoard);
   }
+
   return (
-    <div>
-      <SudokuBoard
-        playBoard={currentPlayBoard}
-        onChangeHandler={receiveInputs}
-      />
+    <div className="playingScreen">
+      <SudokuBoard playBoard={currentPlayBoard} onChangeHandler={processPlays}
+                   gameState={gameState} />
+      <CheckingButton checkingPlaysFunction={switchToCheckingState} />
     </div>
   );
 }
