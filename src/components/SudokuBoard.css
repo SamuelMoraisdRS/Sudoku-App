@@ -1,7 +1,9 @@
+
+/* == Board Styles */
 .board {
     display: flex;
-    flex-direction: column; 
-    justify-content: space-between;  
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .boardRow {
@@ -10,8 +12,7 @@
     flex-direction: row;
 }
 
-/* Cell Styles */
-
+/* == Cell Styles */
 .cell {
     display: flex;
     justify-content: center;

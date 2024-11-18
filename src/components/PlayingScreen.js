@@ -1,14 +1,23 @@
 import { useState } from "react";
+import { useRef } from "react";
 import { SudokuBoard } from "./SudokuBoard";
 
-// TODO Implement ID as a private attribute for Cell
-// TODO rename Cell
 class Cell {
+  #key;
+  #row;
+  #column;
   #value;
   #status;
-  constructor(value, status) {
+  generateCellKey(row, column) {
+    // TODO should receive as dependency
+    return `${row}${column}`;
+  }
+  constructor(row, column, value, status) {
+    this.#key = this.generateCellKey(row, column);
     this.#value = value;
     this.#status = status;
+    this.#column = column;
+    this.#row = row;
   }
   get value() {
     return this.#value;
@@ -16,14 +25,23 @@ class Cell {
   get status() {
     return this.#status;
   }
+  get key() {
+    return this.#key;
+  }
+  get row() {
+    return this.#row;
+  }
+  get column() {
+    return this.#column;
+  }
 }
 
-const checkCorrectAnswer = (value) => value < 0;
+const isCorrectValue = (value) => value < 0;
 
-function CheckingButton({ checkingPlaysFunction }) {
+function Button({ buttonLabel, onClickHandler }) {
   return (
     <div>
-      <button onClick={checkingPlaysFunction}>Check</button>
+      <button onClick={onClickHandler}> {buttonLabel} </button>
     </div>
   );
 }
@@ -33,10 +51,10 @@ const createPlayBoard = (boardObject) => {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       let id = `${i}${j}`;
-      if (boardObject[i][j] < 0) {
-        map.set(id, new Cell(null, "empty"));
+      if (isCorrectValue(boardObject[i][j])) {
+        map.set(id, new Cell(i, j, null, "empty"));
       } else {
-        map.set(id, new Cell(boardObject[i][j], "original"));
+        map.set(id, new Cell(i, j, boardObject[i][j], "original"));
       }
     }
   }
@@ -48,14 +66,17 @@ function checkPlay(board, row, column, value) {
   column = parseInt(column);
   value = parseInt(value);
   const boardValue = board[row][column];
-  if (value === -boardValue) return "correct";
+  if (value === -boardValue) return "correct"; //TODO we should check in relation to the correctAnswers map object
   const getZoneBounds = (index) => {
     if (index <= 2) return [0, 2];
     if (index <= 5) return [3, 5];
     return [6, 8];
   };
+
   const rowBounds = getZoneBounds(row);
+
   const columnBounds = getZoneBounds(column);
+
   // The board is split into three 3x3 grids. This array reprents its values
   const zone = [];
   for (let i = rowBounds[0]; i <= rowBounds[1]; i++) {
@@ -73,27 +94,80 @@ function checkPlay(board, row, column, value) {
   return "valid";
 }
 
-export default function PlayingScreen({ board }) {
-  // Game board represented as a Map. gets updated with each play.
-  const [currentPlayBoard, setPlayBoard] = useState(createPlayBoard(board));
-  const [gameState, setGameState] = useState("playing");
+const checkWin = (currentPlayBoard, correctValues) => {
+  correctValues.forEach((cell) => {
+    if (currentPlayBoard.get(cell.key) === -cell.value) {
+      return false;
+    }
+  });
+  return true;
+};
 
-  function switchToCheckingState() {
-    setGameState("checking");
-  }
+export default function PlayingScreen({ board, numChecks, numSubmits }) {
+  // Game board represented as a Map. gets updated with each play.
+  const [currentPlayBoard, setPlayBoard] = useState(() =>
+    createPlayBoard(board)
+  );
+  const [gameState, setGameState] = useState("playing");
+  const [numberOfChecks, setNumberOfChecks] = useState(numChecks);
+  const [numberOfSubmits, setNumberOfSubmits] = useState(numSubmits);
+
+  // makeshift filter function for Map objects. we should get rid of it
+  let arr = [];
+  currentPlayBoard.forEach((cell, key) => {
+    if (cell.status === "empty") {
+      arr.push(cell);
+    }
+  });
+
+  const CORRECT_ANSWERS = useRef(
+    arr.map((cell) => {
+      return new Cell(
+        cell.row,
+        cell.column,
+        board[cell.row][cell.column],
+        "correct"
+      );
+    })
+  );
 
   function processPlays(row, column, value) {
     let newPlayBoard = new Map(currentPlayBoard);
     let status = checkPlay(board, row, column, value);
-    newPlayBoard.set(`${row}${column}`, new Cell(value, status));
+    const cell = new Cell(row, column, value, status);
+    newPlayBoard.set(cell.key, cell);
     setPlayBoard(newPlayBoard);
+  }
+
+  function switchToCheckingState() {
+    if (gameState === "checking") {
+      setGameState("playing");
+    } else if (gameState === "playing") {
+      setGameState("checking");
+      setNumberOfChecks(numberOfChecks - 1);
+    }
+  }
+
+  function submit() {
+    if (checkWin(currentPlayBoard, CORRECT_ANSWERS)) {
+      setGameState("win");
+    }
   }
 
   return (
     <div className="playingScreen">
-      <SudokuBoard playBoard={currentPlayBoard} onChangeHandler={processPlays}
-                   gameState={gameState} />
-      <CheckingButton checkingPlaysFunction={switchToCheckingState} />
+      <SudokuBoard
+        playBoard={currentPlayBoard}
+        onChangeHandler={processPlays}
+        gameState={gameState}
+      />
+      <div className="buttonArea">
+        <Button
+          buttonLabel={"Check"}
+          onClickHandler={switchToCheckingState}
+        />
+        <Button buttonLabel={"submit"} onClickHandler={submit} />
+      </div>
     </div>
   );
 }

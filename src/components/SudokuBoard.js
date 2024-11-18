@@ -2,10 +2,16 @@ import "./SudokuBoard.css";
 
 const NUMBER_COLORS = {
   original: "black",
-  valid: "blue",
-  correct: "green",
-  incorrect: "red",
+  correct: "blue",
+  incorrect: "blue",
   invalid: "orange",
+};
+
+const CHECKING_COLORS = {
+  original: "black",
+  correct: "greenyellow",
+  incorrect: "red",
+  invalid: "red",
 };
 
 function InputNumber({ row, column, cellColor, onChangeHandler, value }) {
@@ -23,17 +29,21 @@ function InputNumber({ row, column, cellColor, onChangeHandler, value }) {
   );
 }
 
-function Square({ row, column, status, value, onChangeHandler }) {
+function Square({ row, column, status, value, onChangeHandler, gameState }) {
   return (
     <div>
       <div className="cell">
-        {status === "original" ? (
-          <span> {value} </span>
+        {status === "original" || gameState === "checking" ? (
+          <span style={{ color: CHECKING_COLORS[status] }}> {value} </span>
         ) : (
           <InputNumber
             row={row}
             column={column}
-            cellColor={NUMBER_COLORS[status]}
+            cellColor={
+              gameState === "playing"
+                ? NUMBER_COLORS[status]
+                : CHECKING_COLORS[status]
+            }
             onChangeHandler={onChangeHandler}
             value={value}
           />
@@ -43,7 +53,7 @@ function Square({ row, column, status, value, onChangeHandler }) {
   );
 }
 
-export function SudokuBoard({ playBoard, onChangeHandler }) {
+export function SudokuBoard({ playBoard, onChangeHandler, gameState }) {
   const squares = [[], [], [], [], [], [], [], [], []];
   let row = 0;
   playBoard.forEach((play, key) => {
@@ -55,6 +65,7 @@ export function SudokuBoard({ playBoard, onChangeHandler }) {
         column={key[1]}
         status={play.status}
         onChangeHandler={onChangeHandler}
+        gameState={gameState}
       />
     );
     if (squares[row].length === 9) {
