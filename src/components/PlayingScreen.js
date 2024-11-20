@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRef } from "react";
 import { SudokuBoard } from "./SudokuBoard";
+import "./PlayingScreen.css";
 
 class Cell {
   #key;
@@ -143,6 +144,9 @@ export default function PlayingScreen({ board, numChecks, numSubmits }) {
     if (gameState === "checking") {
       setGameState("playing");
     } else if (gameState === "playing") {
+      if (numberOfChecks === 0) {
+        return;
+      }
       setGameState("checking");
       setNumberOfChecks(numberOfChecks - 1);
     }
@@ -154,8 +158,12 @@ export default function PlayingScreen({ board, numChecks, numSubmits }) {
     }
   }
 
+
   return (
     <div className="playingScreen">
+      <div>
+        <span> Checks left: {numberOfChecks}</span>
+      </div>
       <SudokuBoard
         playBoard={currentPlayBoard}
         onChangeHandler={processPlays}

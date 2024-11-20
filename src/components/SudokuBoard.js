@@ -18,8 +18,8 @@ function InputNumber({ row, column, cellColor, onChangeHandler, value }) {
   return (
     <input
       type="text"
-      placeholder={value}
-      style={{ color: cellColor }}
+      value={value}
+      style={{ color: cellColor, textAlign: "center" }}
       className="InputNumber"
       onChange={(event) => {
         const newValue = event.target.value;
@@ -28,6 +28,7 @@ function InputNumber({ row, column, cellColor, onChangeHandler, value }) {
     ></input>
   );
 }
+
 
 function Square({ row, column, status, value, onChangeHandler, gameState }) {
   return (
@@ -81,4 +82,25 @@ export function SudokuBoard({ playBoard, onChangeHandler, gameState }) {
       ))}
     </div>
   );
+}
+
+export function PreviewSudokuBoard({ board }) {
+  const squares = [[], [], [], [], [], [], [], [], []];
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      const value = board[i][j] < 0 ? null : board[i][j]
+      squares[i].push(
+        <Square key={`${i}${j}`} value={value} row={i} column={j} status={'original'} gameState={'checking'} onChangeHandler={null} />
+      )
+    }
+  }
+  return (
+    <div className="board">
+      {squares.map((square, index) => (
+        <div key={index} className="boardRow">
+          {square}
+        </div>
+      ))}
+    </div>
+  )
 }
