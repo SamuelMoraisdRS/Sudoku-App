@@ -1,6 +1,6 @@
 export const boards = [
   {
-    id: 1,
+    id: 0,
     dificulty: "easy",
     board: [
       [1, -3, 4, 6, 7, 8, 5, 9, 2],
@@ -15,7 +15,7 @@ export const boards = [
     ],
   },
   {
-    id: 2,
+    id: 1,
     dificulty: "medium",
     board: [
       [4, -3, -5, 8, -7, 1, -9, -6, -2],
@@ -30,7 +30,7 @@ export const boards = [
     ],
   },
   {
-    id: 3,
+    id: 2,
     dificulty: "hard",
     board: [
       [4, -7, -9, -2, 3, -1, -5, 8, -6],
@@ -45,7 +45,7 @@ export const boards = [
     ],
   },
   {
-    id: 4,
+    id: 3,
     dificulty: "very hard",
     board: [
       [3, -4, -9, -7, 2, -6, -8, -5, 1],

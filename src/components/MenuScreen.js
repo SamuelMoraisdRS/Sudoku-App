@@ -1,13 +1,11 @@
-import { boards } from "../data/boards.js";
+// import { boards } from "../data/boards.js";
 import { PreviewSudokuBoard } from "./SudokuBoard.js";
 import { useState } from "react";
 
 
-export default function MenuScreen() {
+export default function MenuScreen({ boards, startGame, updateSettings }) {
 
   const [currentBoard, setcurrentBoard] = useState(0);
-
-console.log(boards[currentBoard].board)
 
   function nextBoard() {
     if (currentBoard === boards.length - 1) {
@@ -16,14 +14,15 @@ console.log(boards[currentBoard].board)
       setcurrentBoard(currentBoard + 1);
     }
   }
+
   function prevBoard() {
     if (currentBoard === 0) {
       setcurrentBoard(boards.length - 1);
     } else {
       setcurrentBoard(currentBoard - 1);
     }
-
   }
+
   return (
     <div className="MenuScreen">
       <header className="Menu-header">
@@ -33,11 +32,18 @@ console.log(boards[currentBoard].board)
         </span>
       </header>
       <main>
-        <button onClick={prevBoard}>Previous</button>
-        <PreviewSudokuBoard
-          board={boards[currentBoard].board}
-        />
-        <button onClick={nextBoard}>Next</button>
+        <span className="boardSelection">
+          <button onClick={prevBoard}>Previous</button>
+          <PreviewSudokuBoard
+            board={boards[currentBoard].board}
+          />
+          <button onClick={nextBoard}>Next</button>
+        </span>
+        <button onClick={() => {
+          const newSettings = { boardId : boards[currentBoard].id, numberOfChecks : 2, numberOfSubmits : 2}
+          updateSettings(newSettings);
+          startGame();
+        }}> Select Puzzle </button>
       </main>
     </div>
   );

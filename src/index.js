@@ -5,12 +5,12 @@ import Menu from './components/MenuScreen';
 import reportWebVitals from './reportWebVitals';
 import PlayingScreen from './components/PlayingScreen';
 import MenuScreen from './components/MenuScreen';
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <MenuScreen />
-
+    <App />
   </React.StrictMode>
 );
 

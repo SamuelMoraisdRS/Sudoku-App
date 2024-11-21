@@ -1,57 +1,41 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import { boards } from './data/boards';
+import PlayingScreen from './components/PlayingScreen';
+import MenuScreen from './components/MenuScreen';
 
 function App() {
-  const [gameState, setGameState] = useState('menu');
+  const [currentScreen, setCurrentScreen] = useState('menu');
 
-  const startGame = () => setGameState('playing');
-  const goToMenu = () => setGameState('menu');
-  const checkPlay = () => setGameState('checking');
+  const [gameSettings, setGameSettings] = useState({ boardId: 0, numberOfChecks: 3, numberOfSubmits: 3 });
 
-  if (gameState == 'menu') {
-    return (
-      <div className="App">
-      <header className="App-header">
-        <h1>Sudoku</h1>
-        <p>
-          Select Board
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-    );
-  } else if (gameState == 'playing') {
-    // return();
-  } else {
-    // return();
+
+  function updateSettings(newSettings) {
+    setGameSettings(newSettings);
   }
+  function startGame() {
+    setCurrentScreen('playing');
+  }
+  /**
+   *
+   * @param {string} outcome How the game ended (the player won, quit or ran out of submits)
+   */
+  function endsGame(outcome) {
+    setCurrentScreen('ending'); // TODO we'll decide on how to do this later
+  }
+  return (
+    <div className="App">
+      {currentScreen === 'menu' && <MenuScreen boards={boards} startGame={startGame} updateSettings={updateSettings} />}
+      {currentScreen === 'playing' && <PlayingScreen board={boards[gameSettings.boardId].board}
+                                                     endGame={endsGame}
+                                                     numChecks={gameSettings.numberOfChecks}
+                                                     numSubmits={gameSettings.numberOfSubmits} />}
+      {/* {currentScreen === 'ending' && <GameOver score={score} restartGame={restartGame} />} */}
+    </div>
+  );
 
-  // return (
-  //   <div className="App">
-  //     <header className="App-header">
-  //       <img src={logo} className="App-logo" alt="logo" />
-  //       <p>
-  //         Edit <code>src/App.js</code> and save to reload.
-  //       </p>
-  //       <a
-  //         className="App-link"
-  //         href="https://reactjs.org"
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //       >
-  //         Learn React
-  //       </a>
-  //     </header>
-  //   </div>
-  // );
+
 }
 
 export default App;

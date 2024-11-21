@@ -9,8 +9,7 @@ class Cell {
   #column;
   #value;
   #status;
-  generateCellKey(row, column) {
-    // TODO should receive as dependency
+  generateCellKey(row, column) {  // TODO should receive as dependency
     return `${row}${column}`;
   }
   constructor(row, column, value, status) {
@@ -47,15 +46,15 @@ function Button({ buttonLabel, onClickHandler }) {
   );
 }
 
-const createPlayBoard = (boardObject) => {
+const createPlayBoard = (boardMatrix) => {
   let map = new Map();
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       let id = `${i}${j}`;
-      if (isCorrectValue(boardObject[i][j])) {
+      if (isCorrectValue(boardMatrix[i][j])) {
         map.set(id, new Cell(i, j, null, "empty"));
       } else {
-        map.set(id, new Cell(i, j, boardObject[i][j], "original"));
+        map.set(id, new Cell(i, j, boardMatrix[i][j], "original"));
       }
     }
   }
@@ -104,7 +103,7 @@ const checkWin = (currentPlayBoard, correctValues) => {
   return true;
 };
 
-export default function PlayingScreen({ board, numChecks, numSubmits }) {
+export default function PlayingScreen({ board, numChecks, numSubmits, endGame }) {
   // Game board represented as a Map. gets updated with each play.
   const [currentPlayBoard, setPlayBoard] = useState(() =>
     createPlayBoard(board)
@@ -158,7 +157,6 @@ export default function PlayingScreen({ board, numChecks, numSubmits }) {
     }
   }
 
-
   return (
     <div className="playingScreen">
       <div>
@@ -175,6 +173,7 @@ export default function PlayingScreen({ board, numChecks, numSubmits }) {
           onClickHandler={switchToCheckingState}
         />
         <Button buttonLabel={"submit"} onClickHandler={submit} />
+        <Button buttonLabel={"Quit"} onClickHandler={() => endGame('quitting')} /> {/* TODO erro */}
       </div>
     </div>
   );
