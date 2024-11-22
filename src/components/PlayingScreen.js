@@ -103,6 +103,27 @@ const checkWin = (currentPlayBoard, correctValues) => {
   return true;
 };
 
+const AlertModal = ({ children, onClose }) => {
+  return (
+    <div className="backdrop">
+      <div className="modal">
+        {children}
+        <button onClick={onClose}>Fechar</button>
+      </div>
+    </div>
+  );
+};
+
+const QuitModal = ({ quitFunction, cancelQuitFunction }) => {
+  return (
+    <div>
+      <h1> Are you sure you want to quit? </h1>
+      <button onClick={quitFunction}>Yes</button>
+      <button onClick={cancelQuitFunction}>No</button>
+    </div>
+  )
+}
+
 export default function PlayingScreen({ board, numChecks, numSubmits, endGame }) {
   // Game board represented as a Map. gets updated with each play.
   const [currentPlayBoard, setPlayBoard] = useState(() =>
@@ -112,7 +133,7 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
   const [numberOfChecks, setNumberOfChecks] = useState(numChecks);
   const [numberOfSubmits, setNumberOfSubmits] = useState(numSubmits);
 
-  // makeshift filter function for Map objects. we should get rid of it
+  // makeshift filter function for Map objects.
   let arr = [];
   currentPlayBoard.forEach((cell, key) => {
     if (cell.status === "empty") {
@@ -130,6 +151,7 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
       );
     })
   );
+
 
   function processPlays(row, column, value) {
     let newPlayBoard = new Map(currentPlayBoard);
@@ -152,29 +174,51 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
   }
 
   function submit() {
-    if (checkWin(currentPlayBoard, CORRECT_ANSWERS)) {
+    if (checkWin(currentPlayBoard, CORRECT_ANSWERS.current)) {
       setGameState("win");
     }
   }
 
-  return (
-    <div className="playingScreen">
-      <div>
-        <span> Checks left: {numberOfChecks}</span>
-      </div>
-      <SudokuBoard
-        playBoard={currentPlayBoard}
-        onChangeHandler={processPlays}
-        gameState={gameState}
+  function quit() {
+    endGame('quitting')
+  };
+  function cancelQuit() {
+    setGameState('playing')
+ };
+
+  if (gameState === 'win') {
+    return (
+      // STUB
+      <h1>YOU WON!</h1>
+    )
+  } else if (gameState === 'quitting') {
+    return (
+      <AlertModal children={<QuitModal quitFunction={quit} cancelQuitFunction={cancelQuit} />}
+        onClose={cancelQuit}
       />
-      <div className="buttonArea">
-        <Button
-          buttonLabel={"Check"}
-          onClickHandler={switchToCheckingState}
+    )
+  } else {
+    return (
+      <div className="playingScreen">
+        {/* {gameState === 'quitting' && <AlertModal message="Isso é um alerta!" onClose={} />} */}
+        <div>
+          <span> Checks left: {numberOfChecks}</span>
+        </div>
+        <SudokuBoard
+          playBoard={currentPlayBoard}
+          onChangeHandler={processPlays}
+          gameState={gameState}
         />
-        <Button buttonLabel={"submit"} onClickHandler={submit} />
-        <Button buttonLabel={"Quit"} onClickHandler={() => endGame('quitting')} /> {/* TODO erro */}
+        <div className="buttonArea">
+          <Button
+            buttonLabel={"Check"}
+            onClickHandler={switchToCheckingState}
+          />
+          <Button buttonLabel={"submit"} onClickHandler={submit} />
+          <Button buttonLabel={"Quit"} onClickHandler={() => setGameState('quitting')} /> {/* TODO erro */}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
 }

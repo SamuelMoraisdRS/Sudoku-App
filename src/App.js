@@ -22,7 +22,7 @@ function App() {
    * @param {string} outcome How the game ended (the player won, quit or ran out of submits)
    */
   function endsGame(outcome) {
-    setCurrentScreen('ending'); // TODO we'll decide on how to do this later
+    setCurrentScreen('menu'); // TODO we'll decide on how to do this later
   }
   return (
     <div className="App">
