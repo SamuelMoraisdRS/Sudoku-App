@@ -1,6 +1,7 @@
 // import { boards } from "../data/boards.js";
 import { PreviewSudokuBoard } from "./SudokuBoard.js";
 import { useState } from "react";
+import "./MenuScreen.css"
 
 
 export default function MenuScreen({ boards, startGame, updateSettings }) {
@@ -27,11 +28,11 @@ export default function MenuScreen({ boards, startGame, updateSettings }) {
     <div className="MenuScreen">
       <header className="Menu-header">
         <h1>Sudoku</h1>
+      </header>
+      <main>
         <span>
           Dificulty: {boards[currentBoard].dificulty}
         </span>
-      </header>
-      <main>
         <span className="boardSelection">
           <button onClick={prevBoard}>Previous</button>
           <PreviewSudokuBoard
@@ -40,6 +41,7 @@ export default function MenuScreen({ boards, startGame, updateSettings }) {
           <button onClick={nextBoard}>Next</button>
         </span>
         <button onClick={() => {
+          // TODO: Replace the mock attributes below
           const newSettings = { boardId : boards[currentBoard].id, numberOfChecks : 2, numberOfSubmits : 2}
           updateSettings(newSettings);
           startGame();
