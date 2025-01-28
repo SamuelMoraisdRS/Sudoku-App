@@ -1,9 +1,7 @@
 // import { boards } from "../data/boards.js";
 import { PreviewSudokuBoard } from "./SudokuBoard.js";
-import { useState } from "react";
 import "./MenuScreen.css"
 
-const DEFAULT_SETTINGS = {boardId : 0, numberOfChecks : 3, numberOfSubmits : 3}
 
 function SettingsSelector({caption, updateSetting}) {
   return (
@@ -16,34 +14,24 @@ function SettingsSelector({caption, updateSetting}) {
   )
 }
 
-export default function MenuScreen({ boards, startGame, updateSettings }) {
-
-  const [currentSettings, setCurrentSettings] = useState(DEFAULT_SETTINGS)
-
-  const [currentBoard, setcurrentBoard] = useState(0);
+export default function MenuScreen({ boards, startGame, updateSetting, currentBoardId }) {
 
   function nextBoard() {
-    if (currentSettings.boardId === boards.length - 1) {
-      setCurrentSettings({...currentSettings, boardId : 0});
-    } else {
-      setCurrentSettings({ ...currentSettings, boardId: currentBoard + 1 });
-    }
+    const nextBoard = currentBoardId === boards.length - 1 ? 0 : ++currentBoardId;
+    updateSetting("boardId", nextBoard);
   }
 
   function prevBoard() {
-    if (currentSettings.boardId === 0) {
-      setCurrentSettings({ ...currentSettings, boardId: boards.length - 1});
-    } else {
-      setCurrentSettings({ ...currentSettings, boardId: currentBoard - 1 });
-    }
+    const prevBoard = currentBoardId === 0 ? boards.length - 1 : --currentBoardId;
+    updateSetting("boardId", prevBoard);
   }
 
   function updateNumOfChecks(number) {
-    setCurrentSettings({...currentSettings, numberOfChecks : number})
+    updateSetting("numberOfChecks", number)
   }
 
   function updateNumOfSubmits(number) {
-    setCurrentSettings({ ...currentSettings, numberOfSubmits: number })
+    updateSetting("numberOfSubmits", number)
   }
 
   return (
@@ -55,18 +43,17 @@ export default function MenuScreen({ boards, startGame, updateSettings }) {
         <SettingsSelector caption={"Number of Checks"} updateSetting={updateNumOfChecks}></SettingsSelector>
         <SettingsSelector caption={"Number of Submits"} updateSetting={updateNumOfSubmits}></SettingsSelector>
         <span>
-          Dificulty: {boards[currentBoard].dificulty}
+          Dificulty: {boards[currentBoardId].dificulty}
         </span>
         <span className="boardSelection">
           <button onClick={prevBoard}>Previous</button>
           <PreviewSudokuBoard
-            board={boards[currentBoard].board}
+            board={boards[currentBoardId].board}
           />
           <button onClick={nextBoard}>Next</button>
         </span>
         <button onClick={() => {
-          // TODO: Replace the mock attributes below
-          updateSettings(currentSettings);
+          // updateSettings(currentSettings);
           startGame();
         }}> Select Puzzle </button>
       </main>
