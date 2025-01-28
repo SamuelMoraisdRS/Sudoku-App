@@ -124,14 +124,12 @@ const QuitModal = ({ quitFunction, cancelQuitFunction }) => {
   )
 }
 
-export default function PlayingScreen({ board, numChecks, numSubmits, endGame }) {
+export default function PlayingScreen({ board, endGame, settings, updateSetting}) {
   // Game board represented as a Map. gets updated with each play.
   const [currentPlayBoard, setPlayBoard] = useState(() =>
     createPlayBoard(board)
   );
   const [gameState, setGameState] = useState("playing");
-  const [numberOfChecks, setNumberOfChecks] = useState(numChecks);
-  const [numberOfSubmits, setNumberOfSubmits] = useState(numSubmits);
 
   // makeshift filter function for Map objects.
   let arr = [];
@@ -152,7 +150,6 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
     })
   );
 
-
   function processPlays(row, column, value) {
     let newPlayBoard = new Map(currentPlayBoard);
     let status = checkPlay(board, row, column, value);
@@ -165,11 +162,11 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
     if (gameState === "checking") {
       setGameState("playing");
     } else if (gameState === "playing") {
-      if (numberOfChecks === 0) {
+      if (settings.numberOfChecks === 0) {
         return;
       }
       setGameState("checking");
-      setNumberOfChecks(numberOfChecks - 1);
+      updateSetting("numberOfChecks", settings.numberOfChecks- 1);
     }
   }
 
@@ -184,7 +181,7 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
   };
   function cancelQuit() {
     setGameState('playing')
- };
+  };
 
   if (gameState === 'win') {
     return (
@@ -200,9 +197,8 @@ export default function PlayingScreen({ board, numChecks, numSubmits, endGame })
   } else {
     return (
       <div className="playingScreen">
-        {/* {gameState === 'quitting' && <AlertModal message="Isso é um alerta!" onClose={} />} */}
         <div>
-          <span> Checks left: {numberOfChecks}</span>
+          <span> Checks left: {settings.numberOfChecks}</span>
         </div>
         <SudokuBoard
           playBoard={currentPlayBoard}
