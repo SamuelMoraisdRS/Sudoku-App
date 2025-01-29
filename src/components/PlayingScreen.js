@@ -66,6 +66,7 @@ function checkPlay(board, row, column, value) {
   column = parseInt(column);
   value = parseInt(value);
   const boardValue = board[row][column];
+  // console.log(board)
   if (value === -boardValue) return "correct"; //TODO we should check in relation to the correctAnswers map object
   const getZoneBounds = (index) => {
     if (index <= 2) return [0, 2];
@@ -94,15 +95,6 @@ function checkPlay(board, row, column, value) {
   return "valid";
 }
 
-const checkWin = (currentPlayBoard, correctValues) => {
-  correctValues.forEach((cell) => {
-    if (currentPlayBoard.get(cell.key) === -cell.value) {
-      return false;
-    }
-  });
-  return true;
-};
-
 const AlertModal = ({ children, onClose }) => {
   return (
     <div className="backdrop">
@@ -124,7 +116,7 @@ const QuitModal = ({ quitFunction, cancelQuitFunction }) => {
   )
 }
 
-export default function PlayingScreen({ board, endGame, settings, updateSetting}) {
+export default function PlayingScreen({ board, endGame, settings, updateSetting }) {
   // Game board represented as a Map. gets updated with each play.
   const [currentPlayBoard, setPlayBoard] = useState(() =>
     createPlayBoard(board)
@@ -139,6 +131,19 @@ export default function PlayingScreen({ board, endGame, settings, updateSetting}
     }
   });
 
+  const checkWin = (currentPlayBoard, correctValues) => {
+    for (let cell of correctValues) {
+      console.log(cell);
+      console.log(currentPlayBoard.get(cell.key).status);
+
+      if (currentPlayBoard.get(cell.key).value != -cell.value || currentPlayBoard.get(cell.key).status == "empty") {
+        console.log("Chegou no false")
+        return false;
+      }
+    }
+    return true;
+  };
+
   const CORRECT_ANSWERS = useRef(
     arr.map((cell) => {
       return new Cell(
@@ -151,10 +156,13 @@ export default function PlayingScreen({ board, endGame, settings, updateSetting}
   );
 
   function processPlays(row, column, value) {
+    // console.log(`Value : ${value}`)
     let newPlayBoard = new Map(currentPlayBoard);
     let status = checkPlay(board, row, column, value);
     const cell = new Cell(row, column, value, status);
+    // console.log(cell.value)
     newPlayBoard.set(cell.key, cell);
+    console.log(newPlayBoard.get(cell.key).value)
     setPlayBoard(newPlayBoard);
   }
 
@@ -166,13 +174,16 @@ export default function PlayingScreen({ board, endGame, settings, updateSetting}
         return;
       }
       setGameState("checking");
-      updateSetting("numberOfChecks", settings.numberOfChecks- 1);
+      updateSetting("numberOfChecks", settings.numberOfChecks - 1);
     }
   }
 
   function submit() {
     if (checkWin(currentPlayBoard, CORRECT_ANSWERS.current)) {
       setGameState("win");
+    } else {
+      updateSetting("numberOfSubmits", --settings.numberOfSubmits);
+      settings.numberOfSubmits == 0 && endGame( );
     }
   }
 

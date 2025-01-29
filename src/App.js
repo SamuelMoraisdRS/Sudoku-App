@@ -12,7 +12,6 @@ function App() {
 
   const [gameSettings, setGameSettings] = useState(DEFAULT_SETTINGS);
 
-
   function updateSetting(key, value) {
     setGameSettings({...gameSettings, [key] : value});
   }
@@ -32,8 +31,8 @@ function App() {
       {currentScreen === 'menu' && <MenuScreen boards={boards} startGame={startGame} updateSetting={updateSetting} currentBoardId={gameSettings.boardId} />}
       {currentScreen === 'playing' && <PlayingScreen board={boards[gameSettings.boardId].board}
         endGame={endsGame}
-        numChecks={gameSettings.numberOfChecks}
-        numSubmits={gameSettings.numberOfSubmits} />}
+        settings={gameSettings}
+        updateSetting={updateSetting} />}
       {/* {currentScreen === 'ending' && <GameOver score={score} restartGame={restartGame} />} */}
     </div>
   );
