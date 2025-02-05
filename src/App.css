@@ -1,5 +1,27 @@
+
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(155, 155, 155);
+}
+
+header {
+  flex-grow: 0.8;
+}
+
+main {
+  display: flex;
+  /* width: 50%;
+  height: 50%; */
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .App-logo {

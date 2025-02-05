@@ -1,19 +1,13 @@
-
-.App {
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+#settings {
   width: 100%;
-  background-color: darkgray;
+  display: flex;
+  justify-content: space-between;
 }
 
-main {
+#menuScreen {
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
