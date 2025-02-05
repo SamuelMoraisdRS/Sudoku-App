@@ -1,12 +1,14 @@
 
 /* == Board Styles */
 .board {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .boardRow {
+    width: 100%;
     display: flex;
     gap: 1px;
     flex-direction: row;
@@ -21,8 +23,13 @@
     width: 50px;
     height: 50px;
     margin: 0;
-
 }
+
+.preview .cell {
+    width: 45px;
+    height: 45px;
+}
+
 .InputNumber {
     width: 40px;
     height: 40px;

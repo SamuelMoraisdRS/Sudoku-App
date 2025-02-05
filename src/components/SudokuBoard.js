@@ -95,12 +95,15 @@ export function PreviewSudokuBoard({ board }) {
     }
   }
   return (
-    <div className="board">
-      {squares.map((square, index) => (
-        <div key={index} className="boardRow">
-          {square}
-        </div>
-      ))}
+    <div className="preview">
+      <div className="board">
+        {squares.map((square, index) => (
+          <div key={index} className="boardRow">
+            {square}
+          </div>
+        ))}
+      </div>
     </div>
+
   )
 }
