@@ -1,5 +1,5 @@
 
-.App {
+#App {
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -16,12 +16,15 @@ header {
 
 main {
   display: flex;
-  /* width: 50%;
-  height: 50%; */
   flex-grow: 1;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+}
+
+footer {
+  height: 10%;
+  width: 100%;
 }
 
 .App-logo {

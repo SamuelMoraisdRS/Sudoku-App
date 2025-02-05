@@ -14,24 +14,31 @@ function App() {
 
   function updateSetting(key, value) {
     setGameSettings({...gameSettings, [key] : value});
-  } 
+  }
 
   function startGame() {
     setCurrentScreen('playing');
   }
 
-
   function endsGame(ending) {
     setCurrentScreen('menu');
   }
   return (
-    <div className="App">
-      {currentScreen === 'menu' && <MenuScreen boards={boards} startGame={startGame} updateSetting={updateSetting} currentBoardId={gameSettings.boardId} />}
-      {currentScreen === 'playing' && <PlayingScreen board={boards[gameSettings.boardId].board}
-        endGame={endsGame}
-        settings={gameSettings}
-        updateSetting={updateSetting} />}
-    </div>
+    <div id="App">
+      <header>
+        <h1>Sudoku</h1>
+      </header>
+      <main>
+        {currentScreen === 'menu' && <MenuScreen boards={boards} startGame={startGame} updateSetting={updateSetting} currentBoardId={gameSettings.boardId} />}
+        {currentScreen === 'playing' && <PlayingScreen board={boards[gameSettings.boardId].board}
+          endGame={endsGame}
+          settings={gameSettings}
+          updateSetting={updateSetting} />}
+      </main>
+      <footer>
+        <span><h4>Samuel Morais</h4></span>
+      </footer>
+      </div>
   );
 }
 
