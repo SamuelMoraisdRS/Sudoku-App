@@ -14,17 +14,15 @@ function App() {
 
   function updateSetting(key, value) {
     setGameSettings({...gameSettings, [key] : value});
-  }
+  } 
 
   function startGame() {
     setCurrentScreen('playing');
   }
-  /**
-   *
-   * @param {string} outcome How the game ended (the player won, quit or ran out of submits)
-   */
-  function endsGame() {
-    setCurrentScreen('menu'); // TODO we'll decide on how to do this later
+
+
+  function endsGame(ending) {
+    setCurrentScreen('menu');
   }
   return (
     <div className="App">
@@ -33,7 +31,6 @@ function App() {
         endGame={endsGame}
         settings={gameSettings}
         updateSetting={updateSetting} />}
-      {/* {currentScreen === 'ending' && <GameOver score={score} restartGame={restartGame} />} */}
     </div>
   );
 }

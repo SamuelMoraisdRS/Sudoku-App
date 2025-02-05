@@ -3,7 +3,7 @@ import { PreviewSudokuBoard } from "./SudokuBoard.js";
 import "./MenuScreen.css"
 
 
-function SettingsSelector({caption, updateSetting}) {
+function SettingsSelector({ caption, updateSetting }) {
   return (
     <div>
       <input name="number-input" type="number" min={0} max={10} onChange={(event) => updateSetting(event.target.value)}></input>
@@ -40,8 +40,10 @@ export default function MenuScreen({ boards, startGame, updateSetting, currentBo
         <h1>Sudoku</h1>
       </header>
       <main>
-        <SettingsSelector caption={"Number of Checks"} updateSetting={updateNumOfChecks}></SettingsSelector>
-        <SettingsSelector caption={"Number of Submits"} updateSetting={updateNumOfSubmits}></SettingsSelector>
+        <div id="settings">
+          <SettingsSelector caption={"Number of Checks"} updateSetting={updateNumOfChecks}></SettingsSelector>
+          <SettingsSelector caption={"Number of Submits"} updateSetting={updateNumOfSubmits}></SettingsSelector>
+        </div>
         <span>
           Dificulty: {boards[currentBoardId].dificulty}
         </span>
