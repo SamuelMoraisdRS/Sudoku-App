@@ -1,15 +1,12 @@
-// import { boards } from "../data/boards.js";
 import { PreviewSudokuBoard } from "./SudokuBoard.js";
 import "./MenuScreen.css"
-
+import "./SudokuBoard.css"
 
 function SettingsSelector({ caption, updateSetting }) {
   return (
     <div>
-      <input name="number-input" type="number" min={0} max={10} onChange={(event) => updateSetting(event.target.value)}></input>
-      <label htmlFor="number-imput">
-        {caption}
-      </label>
+      <input name="number-input" placeholder={caption} type="number" min={0} max={10} onChange={(event) => updateSetting(event.target.value)}
+        style={{ "width": "80px" }}></input>
     </div>
   )
 }
@@ -35,14 +32,10 @@ export default function MenuScreen({ boards, startGame, updateSetting, currentBo
   }
 
   return (
-    <div className="MenuScreen">
-      <header className="Menu-header">
-        <h1>Sudoku</h1>
-      </header>
-      <main>
+    <div id="menuScreen">
         <div id="settings">
-          <SettingsSelector caption={"Number of Checks"} updateSetting={updateNumOfChecks}></SettingsSelector>
-          <SettingsSelector caption={"Number of Submits"} updateSetting={updateNumOfSubmits}></SettingsSelector>
+          <SettingsSelector caption={"Checks"} updateSetting={updateNumOfChecks}></SettingsSelector>
+          <SettingsSelector caption={"Submits"} updateSetting={updateNumOfSubmits}></SettingsSelector>
         </div>
         <span>
           Dificulty: {boards[currentBoardId].dificulty}
@@ -55,10 +48,8 @@ export default function MenuScreen({ boards, startGame, updateSetting, currentBo
           <button onClick={nextBoard}>Next</button>
         </span>
         <button onClick={() => {
-          // updateSettings(currentSettings);
           startGame();
         }}> Select Puzzle </button>
-      </main>
     </div>
   );
 }
