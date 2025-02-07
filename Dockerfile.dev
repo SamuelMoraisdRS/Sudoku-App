@@ -1,0 +1,13 @@
+FROM node
+
+WORKDIR /usr
+
+RUN apt-get update
+
+COPY package*.json ./
+
+RUN npm install
+
+ADD ./public /usr/public
+
+CMD [ "npm", "start" ]
