@@ -1,0 +1,12 @@
+FROM node AS build
+WORKDIR /usr
+RUN apt-get update
+COPY package*.json ./
+RUN npm install
+ADD ./public /usr/public
+ADD ./src /usr/src
+RUN npm run build
+
+FROM nginx
+COPY --from=build /usr/build/ /usr/share/nginx/html
+
